@@ -42,6 +42,10 @@
                     <el-icon><User /></el-icon>
                     <span>个人中心</span>
                   </el-dropdown-item>
+                  <el-dropdown-item command="my-pets">
+                    <el-icon><Star /></el-icon>
+                    <span>我的送养</span>
+                  </el-dropdown-item>
                   <el-dropdown-item command="applications">
                     <el-icon><Document /></el-icon>
                     <span>我的申请</span>
@@ -99,7 +103,7 @@
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { House, User, Document, Setting, SwitchButton, ArrowDown, Message } from '@element-plus/icons-vue'
+import { House, User, Document, Setting, SwitchButton, ArrowDown, Message, Star } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -108,6 +112,9 @@ function handleCommand(command) {
   switch (command) {
     case 'profile':
       router.push('/profile')
+      break
+    case 'my-pets':
+      router.push('/my-pets')
       break
     case 'applications':
       router.push('/my-applications')

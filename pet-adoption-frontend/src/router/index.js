@@ -31,6 +31,12 @@ const routes = [
         meta: { title: '我要送养', requireAuth: true }
       },
       {
+        path: 'my-pets',
+        name: 'MyPets',
+        component: () => import('@/views/pet/MyPets.vue'),
+        meta: { title: '我的送养', requireAuth: true }
+      },
+      {
         path: 'announcements',
         name: 'Announcements',
         component: () => import('@/views/announcement/AnnouncementList.vue'),
@@ -120,6 +126,12 @@ const routes = [
         name: 'AdminCategories',
         component: () => import('@/views/admin/CategoryManage.vue'),
         meta: { title: '分类管理' }
+      },
+      {
+        path: 'comments',
+        name: 'AdminComments',
+        component: () => import('@/views/admin/CommentManage.vue'),
+        meta: { title: '评论管理' }
       }
     ]
   }

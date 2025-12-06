@@ -117,8 +117,28 @@ public class PetController {
      * 更新宠物状态
      */
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER')")
-    public Result<Void> updatePetStatus(@PathVariable Long id, @RequestParam Integer status) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SHELTER', 'USER')")
+    public Result<Void> updatePetStatus(@PathVariable Long id, @RequestParam Integer status, 
+                                         @RequestHeader("Authorization") String authorization) {
+        // 校验权限：只有发布者或管理员可以修改状态
+        Pet existingPet = petService.getById(id);
+        if (existingPet == null) return Result.error("宠物不存在");
+        
+        String token = authorization.replace("Bearer ", "");
+        Long userId = jwtUtils.getUserIdFromToken(token);
+        String role = jwtUtils.getClaimsFromToken(token).get("role", String.class);
+        
+        // 普通用户只能取消自己发布的宠物（将状态改为3-已取消）
+        if (!"ADMIN".equals(role) && !"SHELTER".equals(role)) {
+            if (!existingPet.getPublisherId().equals(userId)) {
+                return Result.error("无权操作");
+            }
+            // 普通用户只能取消，不能改成其他状态
+            if (status != 3) {
+                return Result.error("无权操作");
+            }
+        }
+        
         if (petService.updateStatus(id, status)) {
             return Result.success();
         }

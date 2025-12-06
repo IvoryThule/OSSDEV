@@ -55,8 +55,17 @@ export function createComment(data) {
 
 export function deleteComment(id) {
   return request({
-    url: `/forum/comment/${id}`,
+    url: `/forum/comments/${id}`,
     method: 'delete'
+  })
+}
+
+// 管理员获取所有评论
+export function getAllComments(params) {
+  return request({
+    url: '/forum/comments',
+    method: 'get',
+    params
   })
 }
 

@@ -155,7 +155,7 @@ function getTypeClass(type) {
 }
 
 .header-content {
-  max-width: $container-max-width;
+  max-width: 800px;
   margin: 0 auto;
   padding: 0 $spacing-6;
   text-align: center;

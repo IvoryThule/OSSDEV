@@ -7,6 +7,7 @@ import com.whu.pet.entity.ForumPost;
 import com.whu.pet.security.JwtUtils;
 import com.whu.pet.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +51,20 @@ public class ForumController {
         return Result.success(forumService.getComments(id));
     }
 
+    /**
+     * 管理员获取所有评论（分页）
+     */
+    @GetMapping("/comments")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<IPage<ForumComment>> getAllComments(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) Long postId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String keyword) {
+        return Result.success(forumService.getCommentPage(pageNum, pageSize, postId, userId, keyword));
+    }
+
     @PostMapping("/comments")
     public Result<Void> addComment(@RequestBody ForumComment comment, @RequestHeader("Authorization") String authorization) {
         String token = authorization.replace("Bearer ", "");
@@ -59,6 +74,21 @@ public class ForumController {
             return Result.success();
         }
         return Result.error("评论失败");
+    }
+
+    /**
+     * 删除评论（管理员或评论作者）
+     */
+    @DeleteMapping("/comments/{id}")
+    public Result<Void> deleteComment(@PathVariable Long id, @RequestHeader("Authorization") String authorization) {
+        String token = authorization.replace("Bearer ", "");
+        Long userId = jwtUtils.getUserIdFromToken(token);
+        String role = jwtUtils.getClaimsFromToken(token).get("role", String.class);
+        
+        if (forumService.deleteComment(id, userId, "ADMIN".equals(role))) {
+            return Result.success();
+        }
+        return Result.error("删除失败");
     }
 
     @PostMapping("/like")

@@ -21,9 +21,15 @@ public class ForumComment {
     private LocalDateTime createTime;
     
     @TableField(exist = false)
+    private String userName;
+    @TableField(exist = false)
+    private String userAvatar;
+    @TableField(exist = false)
     private String nickname;
     @TableField(exist = false)
     private String avatar;
     @TableField(exist = false)
     private String replyToNickname;
+    @TableField(exist = false)
+    private String postTitle;
 }

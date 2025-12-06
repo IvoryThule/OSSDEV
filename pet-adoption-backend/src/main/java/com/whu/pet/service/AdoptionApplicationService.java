@@ -187,8 +187,8 @@ public class AdoptionApplicationService extends ServiceImpl<AdoptionApplicationM
             return false;
         }
 
-        application.setStatus(3);
-        boolean result = updateById(application);
+        // 物理删除申请记录
+        boolean result = removeById(id);
 
         // 检查是否还有其他待审核申请
         if (result) {

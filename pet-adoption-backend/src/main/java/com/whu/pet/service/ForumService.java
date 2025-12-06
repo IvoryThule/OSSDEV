@@ -119,4 +119,49 @@ public class ForumService extends ServiceImpl<ForumPostMapper, ForumPost> {
             }
         }
     }
+
+    /**
+     * 分页获取所有评论（管理员用）
+     */
+    public IPage<ForumComment> getCommentPage(int pageNum, int pageSize, Long postId, Long userId, String keyword) {
+        Page<ForumComment> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<ForumComment> wrapper = new QueryWrapper<>();
+        if (postId != null) {
+            wrapper.eq("post_id", postId);
+        }
+        if (userId != null) {
+            wrapper.eq("user_id", userId);
+        }
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            wrapper.like("content", keyword);
+        }
+        wrapper.orderByDesc("create_time");
+        return commentMapper.selectCommentPageWithUser(page, postId, userId, keyword);
+    }
+
+    /**
+     * 删除评论
+     */
+    @Transactional
+    public boolean deleteComment(Long id, Long userId, boolean isAdmin) {
+        ForumComment comment = commentMapper.selectById(id);
+        if (comment == null) return false;
+        
+        // 只有管理员或评论作者可以删除
+        if (!isAdmin && !comment.getUserId().equals(userId)) {
+            return false;
+        }
+        
+        int rows = commentMapper.deleteById(id);
+        if (rows > 0) {
+            // 更新帖子评论数
+            ForumPost post = baseMapper.selectById(comment.getPostId());
+            if (post != null && post.getCommentCount() > 0) {
+                post.setCommentCount(post.getCommentCount() - 1);
+                baseMapper.updateById(post);
+            }
+            return true;
+        }
+        return false;
+    }
 }

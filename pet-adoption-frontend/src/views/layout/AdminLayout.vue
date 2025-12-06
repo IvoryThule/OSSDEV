@@ -34,6 +34,10 @@
           <el-icon><Bell /></el-icon>
           <span>公告管理</span>
         </el-menu-item>
+        <el-menu-item v-if="userStore.isAdmin" index="/admin/comments">
+          <el-icon><ChatDotRound /></el-icon>
+          <span>评论管理</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 
@@ -76,6 +80,7 @@
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
+import { DataAnalysis, House, Document, Menu, User, Bell, ChatDotRound } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
