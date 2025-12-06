@@ -9,6 +9,21 @@
 
     <div class="page-container">
       <div class="toolbar">
+        <div class="search-box">
+          <el-input 
+            v-model="keyword" 
+            placeholder="搜索帖子标题或内容..." 
+            size="large"
+            clearable
+            @keyup.enter="searchPosts"
+            @clear="searchPosts"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
+          <el-button type="primary" size="large" @click="searchPosts">搜索</el-button>
+        </div>
         <el-button type="primary" size="large" @click="showCreateDialog">
           <el-icon><Plus /></el-icon> 发布帖子
         </el-button>
@@ -81,7 +96,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPosts, createPost } from '@/api/forum'
-import { Plus, View, ChatDotRound, Star } from '@element-plus/icons-vue'
+import { Plus, View, ChatDotRound, Star, Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import defaultAvatar from '@/assets/default-avatar.png'
 
@@ -91,6 +106,7 @@ const loading = ref(false)
 const pageNum = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const keyword = ref('')
 
 const createVisible = ref(false)
 const submitting = ref(false)
@@ -112,7 +128,7 @@ onMounted(() => {
 async function loadPosts() {
   loading.value = true
   try {
-    const res = await getPosts({ pageNum: pageNum.value, pageSize: pageSize.value })
+    const res = await getPosts({ pageNum: pageNum.value, pageSize: pageSize.value, keyword: keyword.value || undefined })
     if (res.code === 200) {
       posts.value = res.data.records
       total.value = res.data.total
@@ -120,6 +136,11 @@ async function loadPosts() {
   } finally {
     loading.value = false
   }
+}
+
+function searchPosts() {
+  pageNum.value = 1
+  loadPosts()
 }
 
 function showCreateDialog() {
@@ -170,11 +191,10 @@ function formatDate(dateStr) {
 .page-header {
   background: $color-primary;
   padding: $spacing-16 0;
-  margin-bottom: $spacing-8;
 }
 
 .header-content {
-  max-width: $container-max-width;
+  max-width: 800px;
   margin: 0 auto;
   padding: 0 $spacing-6;
   text-align: center;
@@ -195,13 +215,22 @@ function formatDate(dateStr) {
 .page-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 $spacing-6 $spacing-12;
+  padding: $spacing-12 $spacing-6;
 }
 
 .toolbar {
   margin-bottom: $spacing-6;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-4;
+}
+
+.search-box {
+  display: flex;
+  gap: $spacing-2;
+  flex: 1;
+  max-width: 400px;
 }
 
 .posts-list {

@@ -101,8 +101,8 @@
 
           <!-- Image Upload Section -->
           <div class="form-section">
-            <h3 class="section-title">照片上传</h3>
-            <el-form-item prop="imageUrl">
+            <h3 class="section-title">照片上传 <span class="optional-tag">(可选)</span></h3>
+            <el-form-item>
               <el-upload
                 class="avatar-uploader"
                 action="/api/files/upload"
@@ -165,8 +165,7 @@ const rules = {
   categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
   breed: [{ required: true, message: '请输入品种', trigger: 'blur' }],
   age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
-  description: [{ required: true, message: '请输入详细描述', trigger: 'blur' }],
-  imageUrl: [{ required: true, message: '请上传照片', trigger: 'change' }]
+  description: [{ required: true, message: '请输入详细描述', trigger: 'blur' }]
 }
 
 const uploadHeaders = {

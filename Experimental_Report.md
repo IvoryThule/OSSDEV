@@ -110,31 +110,56 @@
 后端采用标准的分层架构（Controller-Service-Mapper），严格遵循JavaEE开发规范，确保代码的清晰度和可维护性。
 
 **（1）安全认证模块**
+**代码位置**：
+*   `JwtAuthenticationFilter`: `pet-adoption-backend/src/main/java/com/whu/pet/security/JwtAuthenticationFilter.java`
+*   `SecurityConfig`: `pet-adoption-backend/src/main/java/com/whu/pet/config/SecurityConfig.java`
+
 系统基于Spring Security实现了一套完善的安全控制机制。核心逻辑在于自定义的 `JwtAuthenticationFilter` 过滤器。该过滤器会拦截所有进入系统的HTTP请求，从Header中提取 `Authorization` 字段（Bearer Token）。如果Token存在且有效（通过JWT工具类验证签名和有效期），则解析出用户信息（用户名、角色），并构建 `UsernamePasswordAuthenticationToken` 对象存入 `SecurityContextHolder`，完成用户的身份注入。同时，在 `SecurityConfig` 配置类中定义了精细的URL权限规则，例如 `/api/admin/**` 路径仅允许拥有管理员角色的用户访问，而 `/api/auth/**` 和公共GET请求则允许匿名访问。
 
 **（2）全局异常处理**
+**代码位置**：
+*   `GlobalExceptionHandler`: `pet-adoption-backend/src/main/java/com/whu/pet/exception/GlobalExceptionHandler.java`
+*   `BusinessException`: `pet-adoption-backend/src/main/java/com/whu/pet/exception/BusinessException.java`
+
 为了规范API接口的返回格式，提升前后端交互的稳定性，系统实现了 `GlobalExceptionHandler`。利用 `@RestControllerAdvice` 注解捕获Controller层抛出的所有异常。针对 `MethodArgumentNotValidException`（参数校验失败），提取具体的错误字段信息；针对 `AccessDeniedException`（权限不足），返回403状态码；针对自定义的 `BusinessException`，返回特定的业务错误码。所有异常最终都被封装为统一的 `Result<T>` 格式（包含code, message, data）返回给前端，避免了直接暴露堆栈信息，提升了系统的安全性。
 
 **（3）MyBatis-Plus应用**
+**代码位置**：
+*   `PetService`: `pet-adoption-backend/src/main/java/com/whu/pet/service/PetService.java`
+*   `PetMapper`: `pet-adoption-backend/src/main/java/com/whu/pet/mapper/PetMapper.java`
+
 在Service层，通过继承 `ServiceImpl<Mapper, Entity>`，直接获得了通用的CRUD能力，无需手写基础SQL。例如，在查询宠物列表时，使用 `LambdaQueryWrapper` 构建动态查询条件，可以优雅地处理“如果名称不为空则模糊查询”、“如果状态不为空则精确匹配”等逻辑，代码简洁且类型安全。此外，还配置了 `PaginationInnerInterceptor` 分页插件，实现了物理分页功能，有效提升了大数据量下的查询性能。
 
 #### 3.2 前端交互设计与实现
 **（1）网络请求封装**
+**代码位置**：`pet-adoption-frontend/src/utils/request.js`
+
 为了统一处理HTTP请求，系统对Axios进行了二次封装（`request.js`）。
 *   **请求拦截器**：自动在每个请求的Header中添加 `Authorization: Bearer token`，确保后端能识别用户身份，避免了在每个API调用处手动添加Token的繁琐。
 *   **响应拦截器**：统一处理后端返回的状态码。如果遇到 `401 Unauthorized`，说明Token过期或无效，自动清除本地缓存的用户信息并跳转至登录页；如果遇到业务错误（code != 200），统一调用Element Plus的 `ElMessage` 组件弹出错误提示框，简化了组件内的错误处理逻辑。
 
 **（2）状态管理**
+**代码位置**：`pet-adoption-frontend/src/stores/user.js`
+
 使用 Pinia 定义了 `userStore`，用于集中存储当前登录用户的 Token、UserInfo 和 Role。利用 Pinia 的持久化插件（pinia-plugin-persistedstate），将关键状态自动同步到 `localStorage` 中，确保页面刷新后用户登录状态不丢失，提供了流畅的用户体验。
 
 #### 3.3 关键功能实现细节
 **（1）双重审核机制**
+**代码位置**：
+*   `AdoptionApplicationController`: `pet-adoption-backend/src/main/java/com/whu/pet/controller/AdoptionApplicationController.java`
+*   `AdoptionApplicationService`: `pet-adoption-backend/src/main/java/com/whu/pet/service/AdoptionApplicationService.java`
+
 领养申请流程设计了严谨的状态机，确保业务逻辑的闭环。
 1.  **提交申请**：用户提交申请时，系统首先检查该宠物是否处于“待领养”状态。如果是，则插入 `adoption_application` 记录，状态为 `0`（待审核），同时在一个事务中将对应 `pet_info` 的状态更新为 `1`（申请中），防止其他人重复申请同一只宠物。
 2.  **审核通过**：管理员点击“通过”后，调用 `approve` 接口。后端开启事务，执行两步操作：将申请记录状态置为 `1`（通过），将宠物信息状态置为 `2`（已领养）。
 3.  **审核驳回**：管理员点击“驳回”并填写理由后，调用 `reject` 接口。后端开启事务，将申请记录状态置为 `2`（驳回），并将宠物信息状态回滚为 `0`（待领养），使其重新回到可被申请的状态，释放资源。
 
 **（2）论坛互动功能**
+**代码位置**：
+*   `ForumController`: `pet-adoption-backend/src/main/java/com/whu/pet/controller/ForumController.java`
+*   `ForumService`: `pet-adoption-backend/src/main/java/com/whu/pet/service/ForumService.java`
+*   前端页面: `pet-adoption-frontend/src/views/forum/ForumList.vue`, `ForumDetail.vue`
+
 实现了完整的社区功能。帖子列表支持分页查询（PageHelper），支持按标题或内容关键词搜索。详情页展示帖子内容及评论树。点赞功能设计为幂等操作，后端通过Redis或数据库表记录“用户-帖子”的点赞关系，防止同一用户对同一帖子重复点赞，保证了数据的准确性。
 
 ### 4. 系统测试与问题分析
@@ -197,6 +222,7 @@
 **附录A：关键代码实现**
 
 **1. Spring Security 配置类 (SecurityConfig.java)**
+**代码位置**：`pet-adoption-backend/src/main/java/com/whu/pet/config/SecurityConfig.java`
 ```java
 @Configuration
 @EnableWebSecurity
@@ -223,6 +249,7 @@ public class SecurityConfig {
 ```
 
 **2. MyBatis-Plus 分页配置 (MybatisPlusConfig.java)**
+**代码位置**：`pet-adoption-backend/src/main/java/com/whu/pet/config/MybatisPlusConfig.java`
 ```java
 @Configuration
 @MapperScan("com.whu.pet.mapper")
@@ -240,6 +267,7 @@ public class MybatisPlusConfig {
 ```
 
 **3. 全局异常处理器 (GlobalExceptionHandler.java)**
+**代码位置**：`pet-adoption-backend/src/main/java/com/whu/pet/exception/GlobalExceptionHandler.java`
 ```java
 @RestControllerAdvice
 @Slf4j
@@ -265,6 +293,7 @@ public class GlobalExceptionHandler {
 ```
 
 **4. 前端 Axios 请求封装 (request.js)**
+**代码位置**：`pet-adoption-frontend/src/utils/request.js`
 ```javascript
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'

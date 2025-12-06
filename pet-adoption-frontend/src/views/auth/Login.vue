@@ -118,7 +118,11 @@ async function handleLogin() {
   try {
     const res = await userStore.login(form)
     if (res.code === 200) {
-      ElMessage.success('登录成功')
+      ElMessage({
+        message: '登录成功',
+        type: 'success',
+        offset: 100
+      })
       const redirect = route.query.redirect || '/'
       router.push(redirect)
     } else {
