@@ -1,0 +1,446 @@
+// ============================================
+// Global Styles - Swiss Spa Aesthetic
+// ============================================
+
+@use 'variables' as *;
+
+// CSS Reset & Base Styles
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  color: $color-gray-800;
+  background-color: $color-cream;
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $color-primary;
+  letter-spacing: $letter-spacing-tight;
+}
+
+h1 { font-size: $font-size-4xl; }
+h2 { font-size: $font-size-3xl; }
+h3 { font-size: $font-size-2xl; }
+h4 { font-size: $font-size-xl; }
+h5 { font-size: $font-size-lg; }
+h6 { font-size: $font-size-base; }
+
+p {
+  line-height: $line-height-relaxed;
+  color: $color-gray-600;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: color $transition-fast;
+  
+  &:hover {
+    color: $color-accent-muted;
+  }
+}
+
+// Selection
+::selection {
+  background-color: rgba($color-accent, 0.2);
+  color: $color-primary;
+}
+
+// Focus Styles
+:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $color-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $color-gray-300;
+  border-radius: $radius-full;
+  
+  &:hover {
+    background: $color-gray-400;
+  }
+}
+
+// ============================================
+// Element Plus Overrides - Premium Feel
+// ============================================
+
+// Buttons
+.el-button {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  letter-spacing: $letter-spacing-wide;
+  border-radius: $radius-sm;
+  transition: all $transition-base;
+  
+  &--primary {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    
+    &:hover,
+    &:focus {
+      background-color: $color-primary-light;
+      border-color: $color-primary-light;
+    }
+  }
+  
+  &--default {
+    background-color: $color-white;
+    border-color: $color-gray-300;
+    color: $color-gray-700;
+    
+    &:hover,
+    &:focus {
+      background-color: $color-gray-100;
+      border-color: $color-gray-400;
+      color: $color-gray-800;
+    }
+  }
+}
+
+// Cards
+.el-card {
+  border: none;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  transition: box-shadow $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-lg;
+  }
+  
+  &.is-hover-shadow:hover {
+    box-shadow: $shadow-xl;
+  }
+}
+
+// Form Elements
+.el-input {
+  --el-input-border-radius: #{$radius-md};
+  
+  .el-input__wrapper {
+    box-shadow: none;
+    border: 1px solid $color-gray-300;
+    transition: all $transition-fast;
+    
+    &:hover {
+      border-color: $color-gray-400;
+    }
+    
+    &.is-focus {
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+  }
+}
+
+.el-select {
+  .el-input__wrapper {
+    box-shadow: none;
+    border: 1px solid $color-gray-300;
+    
+    &:hover {
+      border-color: $color-gray-400;
+    }
+  }
+}
+
+// Tags
+.el-tag {
+  border-radius: $radius-full;
+  font-weight: $font-weight-medium;
+  letter-spacing: $letter-spacing-wide;
+  
+  &--success {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+    border-color: transparent;
+  }
+  
+  &--warning {
+    background-color: rgba($color-warning, 0.1);
+    color: $color-warning;
+    border-color: transparent;
+  }
+  
+  &--danger {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+    border-color: transparent;
+  }
+  
+  &--info {
+    background-color: rgba($color-gray-500, 0.1);
+    color: $color-gray-600;
+    border-color: transparent;
+  }
+}
+
+// Menu
+.el-menu {
+  border: none !important;
+  background-color: transparent !important;
+  
+  &--horizontal {
+    .el-menu-item {
+      font-weight: $font-weight-medium;
+      letter-spacing: $letter-spacing-wide;
+      color: $color-gray-600;
+      border-bottom: none !important;
+      transition: color $transition-fast;
+      
+      &:hover,
+      &.is-active {
+        color: $color-primary;
+        background-color: transparent !important;
+      }
+      
+      &.is-active {
+        font-weight: $font-weight-semibold;
+      }
+    }
+  }
+}
+
+// Dialog
+.el-dialog {
+  border-radius: $radius-xl;
+  
+  .el-dialog__header {
+    padding: $spacing-6 $spacing-8;
+    border-bottom: 1px solid $color-gray-200;
+    
+    .el-dialog__title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $color-primary;
+    }
+  }
+  
+  .el-dialog__body {
+    padding: $spacing-8;
+  }
+  
+  .el-dialog__footer {
+    padding: $spacing-6 $spacing-8;
+    border-top: 1px solid $color-gray-200;
+  }
+}
+
+// Table
+.el-table {
+  --el-table-border-color: #{$color-gray-200};
+  --el-table-header-bg-color: #{$color-gray-100};
+  
+  th.el-table__cell {
+    font-weight: $font-weight-semibold;
+    color: $color-gray-700;
+    text-transform: uppercase;
+    font-size: $font-size-xs;
+    letter-spacing: $letter-spacing-wider;
+  }
+}
+
+// Pagination
+.el-pagination {
+  --el-pagination-button-bg-color: #{$color-white};
+  --el-pagination-hover-color: #{$color-primary};
+  
+  .el-pager li {
+    border-radius: $radius-md;
+    font-weight: $font-weight-medium;
+    
+    &.is-active {
+      background-color: $color-primary;
+    }
+  }
+}
+
+// Avatar
+.el-avatar {
+  background-color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+// Empty
+.el-empty {
+  padding: $spacing-16 $spacing-8;
+  
+  .el-empty__description {
+    color: $color-gray-500;
+  }
+}
+
+// Dropdown
+.el-dropdown-menu {
+  border-radius: $radius-lg;
+  box-shadow: $shadow-xl;
+  border: 1px solid $color-gray-200;
+  padding: $spacing-2;
+  
+  .el-dropdown-menu__item {
+    border-radius: $radius-md;
+    padding: $spacing-3 $spacing-4;
+    font-weight: $font-weight-medium;
+    
+    &:hover {
+      background-color: $color-gray-100;
+      color: $color-primary;
+    }
+  }
+}
+
+// Timeline
+.el-timeline-item__timestamp {
+  color: $color-gray-500;
+  font-size: $font-size-sm;
+}
+
+// Tabs
+.el-tabs__item {
+  font-weight: $font-weight-medium;
+  
+  &.is-active {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// ============================================
+// Utility Classes
+// ============================================
+
+.container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+  width: 100%;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.font-light { font-weight: $font-weight-light; }
+.font-normal { font-weight: $font-weight-normal; }
+.font-medium { font-weight: $font-weight-medium; }
+.font-semibold { font-weight: $font-weight-semibold; }
+.font-bold { font-weight: $font-weight-bold; }
+
+.text-xs { font-size: $font-size-xs; }
+.text-sm { font-size: $font-size-sm; }
+.text-base { font-size: $font-size-base; }
+.text-lg { font-size: $font-size-lg; }
+.text-xl { font-size: $font-size-xl; }
+.text-2xl { font-size: $font-size-2xl; }
+.text-3xl { font-size: $font-size-3xl; }
+.text-4xl { font-size: $font-size-4xl; }
+
+.text-primary { color: $color-primary; }
+.text-accent { color: $color-accent; }
+.text-muted { color: $color-gray-500; }
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-widest;
+}
+
+// Spacing utilities
+@each $size in (0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20) {
+  .mt-#{$size} { margin-top: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .mb-#{$size} { margin-bottom: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .ml-#{$size} { margin-left: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .mr-#{$size} { margin-right: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .pt-#{$size} { padding-top: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .pb-#{$size} { padding-bottom: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .pl-#{$size} { padding-left: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+  .pr-#{$size} { padding-right: var(--spacing-#{$size}, #{$size * 0.25}rem); }
+}
+
+// Flex utilities
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: $spacing-2; }
+.gap-4 { gap: $spacing-4; }
+.gap-6 { gap: $spacing-6; }
+.gap-8 { gap: $spacing-8; }
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn $transition-base forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp $transition-slow forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn $transition-base forwards;
+}

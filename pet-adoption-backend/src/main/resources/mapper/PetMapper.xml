@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whu.pet.mapper.PetMapper">
+
+    <!-- 分页查询宠物列表 -->
+    <select id="selectPetPage" resultType="com.whu.pet.entity.Pet">
+        SELECT p.*, c.name AS category_name, u.nickname AS publisher_name
+        FROM pet p
+        LEFT JOIN pet_category c ON p.category_id = c.id
+        LEFT JOIN sys_user u ON p.publisher_id = u.id
+        <where>
+            <if test="categoryId != null">
+                AND p.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                AND p.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (p.name LIKE CONCAT('%', #{keyword}, '%')
+                     OR p.breed LIKE CONCAT('%', #{keyword}, '%')
+                     OR p.description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY p.create_time DESC
+    </select>
+
+    <!-- 查询宠物详情 -->
+    <select id="selectPetDetail" resultType="com.whu.pet.entity.Pet">
+        SELECT p.*, c.name AS category_name, u.nickname AS publisher_name
+        FROM pet p
+        LEFT JOIN pet_category c ON p.category_id = c.id
+        LEFT JOIN sys_user u ON p.publisher_id = u.id
+        WHERE p.id = #{id}
+    </select>
+
+</mapper>

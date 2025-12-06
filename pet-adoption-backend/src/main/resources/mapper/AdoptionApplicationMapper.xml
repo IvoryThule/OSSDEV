@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whu.pet.mapper.AdoptionApplicationMapper">
+
+    <!-- 分页查询申请列表 -->
+    <select id="selectApplicationPage" resultType="com.whu.pet.entity.AdoptionApplication">
+        SELECT a.*,
+               p.name AS pet_name,
+               p.image_url AS pet_image_url,
+               u.nickname AS applicant_name,
+               r.nickname AS reviewer_name
+        FROM adoption_application a
+        LEFT JOIN pet p ON a.pet_id = p.id
+        LEFT JOIN sys_user u ON a.applicant_id = u.id
+        LEFT JOIN sys_user r ON a.reviewer_id = r.id
+        <where>
+            <if test="status != null">
+                AND a.status = #{status}
+            </if>
+            <if test="applicantId != null">
+                AND a.applicant_id = #{applicantId}
+            </if>
+            <if test="petId != null">
+                AND a.pet_id = #{petId}
+            </if>
+            <if test="publisherId != null">
+                AND p.publisher_id = #{publisherId}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 查询申请详情 -->
+    <select id="selectApplicationDetail" resultType="com.whu.pet.entity.AdoptionApplication">
+        SELECT a.*,
+               p.name AS pet_name,
+               p.image_url AS pet_image_url,
+               u.nickname AS applicant_name,
+               r.nickname AS reviewer_name
+        FROM adoption_application a
+        LEFT JOIN pet p ON a.pet_id = p.id
+        LEFT JOIN sys_user u ON a.applicant_id = u.id
+        LEFT JOIN sys_user r ON a.reviewer_id = r.id
+        WHERE a.id = #{id}
+    </select>
+
+</mapper>
