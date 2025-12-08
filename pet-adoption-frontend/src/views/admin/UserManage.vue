@@ -92,8 +92,8 @@ function getRoleText(role) {
 }
 
 function getRoleType(role) {
-  const map = { ADMIN: 'danger', SHELTER: 'warning', USER: '' }
-  return map[role] || ''
+  const map = { ADMIN: 'danger', SHELTER: 'warning', USER: 'info' }
+  return map[role] || 'info'
 }
 
 function formatDate(dateStr) {

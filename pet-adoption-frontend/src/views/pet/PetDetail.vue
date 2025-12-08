@@ -297,7 +297,7 @@ async function submitApply() {
   await applyFormRef.value.validate()
   submitting.value = true
   try {
-    const res = await submitApplication(applyForm)
+    const res = await submitApplication(applyForm.value)
     if (res.code === 200) {
       ElMessage.success('申请提交成功，请耐心等待审核')
       applyDialogVisible.value = false

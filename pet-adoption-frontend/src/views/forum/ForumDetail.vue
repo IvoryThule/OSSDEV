@@ -96,7 +96,8 @@ import { useUserStore } from '@/stores/user'
 import { getPostDetail, getComments, createComment, deleteComment, toggleLike, getLikeStatus } from '@/api/forum'
 import { ArrowLeft, View, Star, StarFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import defaultAvatar from '@/assets/default-avatar.png'
+
+const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
 const route = useRoute()
 const router = useRouter()

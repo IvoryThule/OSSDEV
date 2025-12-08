@@ -98,7 +98,8 @@ import { useRouter } from 'vue-router'
 import { getPosts, createPost } from '@/api/forum'
 import { Plus, View, ChatDotRound, Star, Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import defaultAvatar from '@/assets/default-avatar.png'
+
+const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
 const router = useRouter()
 const posts = ref([])
